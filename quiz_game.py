@@ -132,6 +132,18 @@ class QuizGame:
         for number, quiz in enumerate(self.quizzes, start=1):
             print(f"[{number}] {quiz.question}")
         print("-" * 40)
+    def show_best_score(self):
+        """최고 점수를 보여줘요"""
+        if self.best_total == 0:
+            print("📭 아직 퀴즈를 풀지 않았습니다.")
+            return
+
+        points = self.best_score * 100 // self.best_total
+        print()
+        print(
+            f"🏆 최고 점수: {points}점 "
+            f"({self.best_total}문제 중 {self.best_score}문제 정답)"
+        )
 
     def save(self):
         """저장하기 (12단계에서 완성해요)"""
@@ -151,7 +163,7 @@ class QuizGame:
                 elif choice == 3:
                    self.show_quiz_list()
                 elif choice == 4:
-                    print("🏆 점수 확인은 준비 중입니다.")
+                    self.show_best_score()
                 elif choice == 5:
                     print("👋 종료합니다.")
                     break
