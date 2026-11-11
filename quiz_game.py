@@ -1,5 +1,12 @@
+import json
+import os
+
 from default_quizzes import get_default_quizzes
+from file_manager import backup_broken_file, read_state, write_state
 from quiz import Quiz
+
+# 이 파일이 있는 폴더(프로젝트 루트)의 state.json
+STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "state.json")
 
 
 class QuizGame:
@@ -18,13 +25,72 @@ class QuizGame:
         self.best_total = 0
         self.load()
 
-    def load(self):
-        """데이터를 불러와요 (12단계에서 state.json 읽기로 완성해요)"""
+    def use_default_data(self):
+        """기본 퀴즈와 빈 점수로 시작해요"""
         self.quizzes = get_default_quizzes()
+        self.best_score = 0
+        self.best_total = 0
+
+    def load(self):
+        """state.json에서 퀴즈와 최고 점수를 불러와요"""
+        try:
+            data = read_state(STATE_FILE)
+            quizzes = [Quiz.from_dict(item) for item in data["quizzes"]]
+            best_score = data["best_score"]
+            best_total = data["best_total"]
+
+            if (
+                type(best_score) is not int
+                or type(best_total) is not int
+                or best_score < 0
+                or best_score > best_total
+            ):
+                raise ValueError("점수 값이 올바르지 않습니다.")
+
+        except FileNotFoundError:
+            # 첫 실행: 파일이 아직 없어요
+            self.use_default_data()
+            return
+
+        except (json.JSONDecodeError, UnicodeDecodeError, KeyError, TypeError, ValueError):
+            # 파일은 있는데 내용이 망가졌어요
+            print("⚠️ 데이터 손상. 기본 데이터로 초기화합니다.")
+            try:
+                backup_broken_file(STATE_FILE)
+                print("📁 손상된 파일은 state.json.bak 으로 보관했습니다.")
+            except OSError:
+                print("⚠️ 손상된 파일을 보관하지 못했습니다.")
+            self.use_default_data()
+            return
+
+        except OSError:
+            # 파일을 읽을 수 없어요 (권한 문제 등)
+            print("⚠️ 파일 읽기 오류. 기본 데이터로 초기화합니다.")
+            self.use_default_data()
+            return
+
+        # 여기까지 왔으면 모두 정상이에요
+        self.quizzes = quizzes
+        self.best_score = best_score
+        self.best_total = best_total
+
+        if best_total == 0:
+            score_text = "최고점수 없음"
+        else:
+            score_text = f"최고점수 {self.calc_points(best_score, best_total)}점"
+        print(f"📂 저장된 데이터를 불러왔습니다. (퀴즈 {len(quizzes)}개, {score_text})")
 
     def save(self):
-        """데이터를 저장해요 (12단계에서 state.json 쓰기로 완성해요)"""
-        pass
+        """퀴즈와 최고 점수를 state.json에 저장해요"""
+        data = {
+            "quizzes": [quiz.to_dict() for quiz in self.quizzes],
+            "best_score": self.best_score,
+            "best_total": self.best_total,
+        }
+        try:
+            write_state(STATE_FILE, data)
+        except OSError:
+            print("⚠️ 저장 실패. 데이터가 유지되지 않을 수 있습니다.")
 
     # ---------- 2. 입력 도우미 ----------
     def read_int(self, prompt, low, high):
