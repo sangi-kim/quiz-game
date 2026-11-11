@@ -46,6 +46,9 @@ class QuizGame:
 
     def play_quiz(self):
         """저장된 퀴즈를 한 문제씩 내고 결과를 보여줘요"""
+        if len(self.quizzes) == 0:
+            print("📭 등록된 퀴즈가 없습니다.")
+            return
         total = len(self.quizzes)
         print()
         print(f"📝 퀴즈를 시작합니다! (총 {total}문제)")
