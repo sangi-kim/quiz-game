@@ -1,4 +1,5 @@
 from default_quizzes import get_default_quizzes
+from quiz import Quiz
 
 
 class QuizGame:
@@ -44,11 +45,23 @@ class QuizGame:
 
             return number
 
+    def read_text(self, prompt):
+        """빈 글자가 아닌 글을 받을 때까지 계속 물어봐요"""
+        while True:
+            text = input(prompt).strip()   # 앞뒤 공백 제거
+
+            if text == "":
+                print("⚠️ 입력이 없습니다. 다시 입력해 주세요.")
+                continue
+
+            return text
+
     def play_quiz(self):
         """저장된 퀴즈를 한 문제씩 내고 결과를 보여줘요"""
         if len(self.quizzes) == 0:
             print("📭 등록된 퀴즈가 없습니다.")
             return
+
         total = len(self.quizzes)
         print()
         print(f"📝 퀴즈를 시작합니다! (총 {total}문제)")
@@ -84,6 +97,29 @@ class QuizGame:
 
         self.save()
 
+    def add_quiz(self):
+        """새 퀴즈를 입력받아 등록해요"""
+        print()
+        print("📌 새로운 퀴즈를 추가합니다.")
+        print()
+
+        question = self.read_text("문제를 입력하세요: ")
+
+        choices = []
+        for i in range(1, 5):
+            choice = self.read_text(f"선택지 {i}: ")
+            choices.append(choice)
+
+        answer = self.read_int("정답 번호 (1-4): ", 1, 4)
+
+        new_quiz = Quiz(question, choices, answer)
+        self.quizzes.append(new_quiz)
+
+        print()
+        print("✅ 퀴즈가 추가되었습니다!")
+
+        self.save()
+
     def save(self):
         """저장하기 (12단계에서 완성해요)"""
         pass
@@ -98,7 +134,7 @@ class QuizGame:
                 if choice == 1:
                     self.play_quiz()
                 elif choice == 2:
-                    print("📌 퀴즈 추가는 준비 중입니다.")
+                    self.add_quiz()
                 elif choice == 3:
                     print("📋 퀴즈 목록은 준비 중입니다.")
                 elif choice == 4:
