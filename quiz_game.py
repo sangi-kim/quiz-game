@@ -119,6 +119,19 @@ class QuizGame:
         print("✅ 퀴즈가 추가되었습니다!")
 
         self.save()
+    def show_quiz_list(self):
+        """등록된 퀴즈의 문제를 번호와 함께 보여줘요"""
+        if len(self.quizzes) == 0:
+            print("📭 등록된 퀴즈가 없습니다.")
+            return
+
+        print()
+        print(f"📋 등록된 퀴즈 목록 (총 {len(self.quizzes)}개)")
+        print()
+        print("-" * 40)
+        for number, quiz in enumerate(self.quizzes, start=1):
+            print(f"[{number}] {quiz.question}")
+        print("-" * 40)
 
     def save(self):
         """저장하기 (12단계에서 완성해요)"""
@@ -136,7 +149,7 @@ class QuizGame:
                 elif choice == 2:
                     self.add_quiz()
                 elif choice == 3:
-                    print("📋 퀴즈 목록은 준비 중입니다.")
+                   self.show_quiz_list()
                 elif choice == 4:
                     print("🏆 점수 확인은 준비 중입니다.")
                 elif choice == 5:
