@@ -236,4 +236,6 @@ quiz-game/
 
 ## 13. clone / pull 실습
 
-(14단계에서 실습한 뒤 결과를 여기에 적습니다.)
+1. `git clone`으로 이 저장소를 `quiz-game-clone` 폴더에 복제했습니다.
+2. 복제한 폴더에서 이 README를 수정하고 `git commit` → `git push` 했습니다.
+3. 원래 폴더(`quiz-game`)에서 `git pull`로 이 변경을 가져와 반영된 것을 확인했습니다.
