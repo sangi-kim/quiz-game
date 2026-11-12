@@ -233,6 +233,13 @@ quiz-game/
 **브랜치와 병합 기록**
 
 ![git graph](docs/screenshots/git_graph.png)
+**clone / pull 실습 결과**
+
+![clone pull](docs/screenshots/clone_pull.png)
+
+**최종 git log 그래프와 브랜치 목록**
+
+![최종 git graph](docs/screenshots/git_graph_final.png)
 
 ## 13. clone / pull 실습
 
